@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         LSS Webhook Notifier
 // @namespace    http://tampermonkey.net/
-// @version      0.1.3
+// @version      0.1.4
 // @description  Notifies Discord about LSS events via webhook
 // @author       Your Name
 // @match        https://www.leitstellenspiel.de/*
@@ -119,7 +119,8 @@
         if (document.getElementById(INTERVAL_ID)) return; // Schon vorhanden
 
         const observer = new MutationObserver(() => {
-            const navBar = document.querySelector('#navbar-user');
+            // Suche nach der rechten Navigationsleiste
+            const navBar = document.querySelector('ul.nav.navbar-nav.navbar-right');
             if (!navBar || document.getElementById(INTERVAL_ID)) return;
 
             const li = document.createElement('li');
