@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         LSS Webhook Notifier
 // @namespace    http://tampermonkey.net/
-// @version      0.1.5
+// @version      0.1.6
 // @description  Notifies Discord about LSS events via webhook
 // @author       Your Name
 // @match        https://www.leitstellenspiel.de/*
@@ -116,35 +116,36 @@
     function createSettingsButton() {
         const INTERVAL_ID = 'lss-webhook-settings-button-added';
         if (document.getElementById(INTERVAL_ID)) return; // Schon vorhanden
-    
+
         const observer = new MutationObserver(() => {
             const navBar = document.querySelector('ul.nav.navbar-nav.navbar-right');
             if (!navBar || document.getElementById(INTERVAL_ID)) return;
-    
-            // Füge den Button VOR dem Logout-Button ein, falls vorhanden, sonst ans Ende
+
+            // Button-Element bauen
             const li = document.createElement('li');
             li.id = INTERVAL_ID;
-    
+
             const a = document.createElement('a');
             a.href = '#';
             a.innerHTML = '⚙️ Webhook Settings';
             a.style.color = '#7289da';
-            a.addEventListener('click', () => {
+            a.addEventListener('click', (e) => {
+                e.preventDefault();
                 const modal = new SettingsModal();
                 modal.show();
             });
-    
+
             li.appendChild(a);
-    
-            // Versuche, vor dem Logout-Button einzufügen
-            const logoutBtn = navBar.querySelector('a[href*=\"sign_out\"]');
-            if (logoutBtn && logoutBtn.parentElement) {
+
+            // Vor Logout-Button einfügen, falls vorhanden
+            const logoutBtn = navBar.querySelector('a[href*="sign_out"]');
+            if (logoutBtn && logoutBtn.parentElement && logoutBtn.parentElement.parentElement === navBar) {
                 navBar.insertBefore(li, logoutBtn.parentElement);
             } else {
                 navBar.appendChild(li);
             }
         });
-    
+
         observer.observe(document.body, {
             childList: true,
             subtree: true
