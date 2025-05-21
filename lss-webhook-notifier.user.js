@@ -21,7 +21,7 @@
     'use strict';
 
     const SUPABASE_URL = 'https://nebghhnkcrwtggktzfcg.supabase.co';
-    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...'; // verkürzt für Übersicht
+    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5lYmdoaG5rY3J3dGdna3R6ZmNnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDc4MjY0MTksImV4cCI6MjA2MzQwMjQxOX0.QPrUjT1R96tC44F8dUFOEgDK5Z-ls5y7-qgFd2IRadw'; // verkürzt für Übersicht
     const ENCRYPTION_PREFIX = 'lss-webhook-';
 
     const userId = getUserId();
