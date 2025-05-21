@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         LSS Webhook Notifier
 // @namespace    http://tampermonkey.net/
-// @version      0.1.2
+// @version      0.1.3
 // @description  Notifies Discord about LSS events via webhook
 // @author       Your Name
 // @match        https://www.leitstellenspiel.de/*
@@ -115,22 +115,33 @@
 
     // Create settings button in the game interface
     function createSettingsButton() {
-        const navBar = document.querySelector('#navbar-user'); // rechter Teil der Menüleiste
-        if (!navBar) return;
+        const INTERVAL_ID = 'lss-webhook-settings-button-added';
+        if (document.getElementById(INTERVAL_ID)) return; // Schon vorhanden
 
-        const li = document.createElement('li');
-        const a = document.createElement('a');
-        a.href = '#';
-        a.innerHTML = '⚙️ Webhook Settings';
-        a.style.color = '#7289da'; // optional für Discord-Farbanlehnung
+        const observer = new MutationObserver(() => {
+            const navBar = document.querySelector('#navbar-user');
+            if (!navBar || document.getElementById(INTERVAL_ID)) return;
 
-        a.addEventListener('click', () => {
-            const modal = new SettingsModal();
-            modal.show();
+            const li = document.createElement('li');
+            li.id = INTERVAL_ID;
+
+            const a = document.createElement('a');
+            a.href = '#';
+            a.innerHTML = '⚙️ Webhook Settings';
+            a.style.color = '#7289da';
+            a.addEventListener('click', () => {
+                const modal = new SettingsModal();
+                modal.show();
+            });
+
+            li.appendChild(a);
+            navBar.appendChild(li);
         });
 
-        li.appendChild(a);
-        navBar.appendChild(li);
+        observer.observe(document.body, {
+            childList: true,
+            subtree: true
+        });
     }
 
     // Load settings from Supabase
