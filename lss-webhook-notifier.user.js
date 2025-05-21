@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         LSS Webhook Notifier
 // @namespace    http://tampermonkey.net/
-// @version      0.1.6
+// @version      0.1.7
 // @description  Notifies Discord about LSS events via webhook
 // @author       Your Name
 // @match        https://www.leitstellenspiel.de/*
@@ -114,30 +114,36 @@
     }
 
     function createSettingsButton() {
-        const INTERVAL_ID = 'lss-webhook-settings-button-added';
-        if (document.getElementById(INTERVAL_ID)) return; // Schon vorhanden
-
+        const INTERVAL_ID = 'lss-webhook-settings-button';
+    
         const observer = new MutationObserver(() => {
             const navBar = document.querySelector('ul.nav.navbar-nav.navbar-right');
-            if (!navBar || document.getElementById(INTERVAL_ID)) return;
-
-            // Button-Element bauen
+            if (!navBar) return;
+    
+            // Prüfen, ob Button schon existiert und ob er im DOM ist
+            let existing = document.getElementById(INTERVAL_ID);
+            if (existing && navBar.contains(existing)) return;
+    
+            // Wenn vorhanden aber entfernt → löschen
+            if (existing) existing.remove();
+    
+            // Button erstellen
             const li = document.createElement('li');
             li.id = INTERVAL_ID;
-
+    
             const a = document.createElement('a');
             a.href = '#';
-            a.innerHTML = '⚙️ Webhook Settings';
+            a.textContent = '⚙️ Webhook Settings';
             a.style.color = '#7289da';
             a.addEventListener('click', (e) => {
                 e.preventDefault();
                 const modal = new SettingsModal();
                 modal.show();
             });
-
+    
             li.appendChild(a);
-
-            // Vor Logout-Button einfügen, falls vorhanden
+    
+            // Direkt vor Logout-Button einfügen
             const logoutBtn = navBar.querySelector('a[href*="sign_out"]');
             if (logoutBtn && logoutBtn.parentElement && logoutBtn.parentElement.parentElement === navBar) {
                 navBar.insertBefore(li, logoutBtn.parentElement);
@@ -145,12 +151,12 @@
                 navBar.appendChild(li);
             }
         });
-
+    
         observer.observe(document.body, {
             childList: true,
             subtree: true
         });
-    }
+    }    
 
     // Load settings from Supabase
     async function loadSettings() {
