@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         LSS Webhook Notifier
 // @namespace    http://tampermonkey.net/
-// @version      0.1.7
+// @version      0.1.8
 // @description  Notifies Discord about LSS events via webhook
 // @author       Your Name
 // @match        https://www.leitstellenspiel.de/*
@@ -114,22 +114,22 @@
     }
 
     function createSettingsButton() {
-        const INTERVAL_ID = 'lss-webhook-settings-button';
+        const BUTTON_ID = 'lss-webhook-settings-button';
     
-        const observer = new MutationObserver(() => {
+        function insertButton() {
             const navBar = document.querySelector('ul.nav.navbar-nav.navbar-right');
             if (!navBar) return;
     
-            // Prüfen, ob Button schon existiert und ob er im DOM ist
-            let existing = document.getElementById(INTERVAL_ID);
+            // Wenn Button bereits korrekt vorhanden → nichts tun
+            const existing = document.getElementById(BUTTON_ID);
             if (existing && navBar.contains(existing)) return;
     
-            // Wenn vorhanden aber entfernt → löschen
+            // Falls im falschen DOM-Kontext → entfernen
             if (existing) existing.remove();
     
-            // Button erstellen
+            // Neuen Listeneintrag mit Button erzeugen
             const li = document.createElement('li');
-            li.id = INTERVAL_ID;
+            li.id = BUTTON_ID;
     
             const a = document.createElement('a');
             a.href = '#';
@@ -143,20 +143,23 @@
     
             li.appendChild(a);
     
-            // Direkt vor Logout-Button einfügen
+            // Versuche vor Logout einzufügen
             const logoutBtn = navBar.querySelector('a[href*="sign_out"]');
-            if (logoutBtn && logoutBtn.parentElement && logoutBtn.parentElement.parentElement === navBar) {
+            if (logoutBtn?.parentElement && logoutBtn.parentElement.parentElement === navBar) {
                 navBar.insertBefore(li, logoutBtn.parentElement);
             } else {
                 navBar.appendChild(li);
             }
-        });
+        }
     
-        observer.observe(document.body, {
-            childList: true,
-            subtree: true
-        });
-    }    
+        // Direkt einfügen bei Start
+        insertButton();
+    
+        // Beobachter sorgt dafür, dass er bei Änderungen wieder erscheint
+        const observer = new MutationObserver(() => insertButton());
+        observer.observe(document.body, { childList: true, subtree: true });
+    }
+       
 
     // Load settings from Supabase
     async function loadSettings() {
