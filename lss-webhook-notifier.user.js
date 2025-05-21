@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         LSS Webhook Notifier
 // @namespace    http://tampermonkey.net/
-// @version      0.1.4
+// @version      0.1.5
 // @description  Notifies Discord about LSS events via webhook
 // @author       Your Name
 // @match        https://www.leitstellenspiel.de/*
@@ -113,19 +113,18 @@
         setupEventListeners();
     }
 
-    // Create settings button in the game interface
     function createSettingsButton() {
         const INTERVAL_ID = 'lss-webhook-settings-button-added';
         if (document.getElementById(INTERVAL_ID)) return; // Schon vorhanden
-
+    
         const observer = new MutationObserver(() => {
-            // Suche nach der rechten Navigationsleiste
             const navBar = document.querySelector('ul.nav.navbar-nav.navbar-right');
             if (!navBar || document.getElementById(INTERVAL_ID)) return;
-
+    
+            // Füge den Button VOR dem Logout-Button ein, falls vorhanden, sonst ans Ende
             const li = document.createElement('li');
             li.id = INTERVAL_ID;
-
+    
             const a = document.createElement('a');
             a.href = '#';
             a.innerHTML = '⚙️ Webhook Settings';
@@ -134,11 +133,18 @@
                 const modal = new SettingsModal();
                 modal.show();
             });
-
+    
             li.appendChild(a);
-            navBar.appendChild(li);
+    
+            // Versuche, vor dem Logout-Button einzufügen
+            const logoutBtn = navBar.querySelector('a[href*=\"sign_out\"]');
+            if (logoutBtn && logoutBtn.parentElement) {
+                navBar.insertBefore(li, logoutBtn.parentElement);
+            } else {
+                navBar.appendChild(li);
+            }
         });
-
+    
         observer.observe(document.body, {
             childList: true,
             subtree: true
