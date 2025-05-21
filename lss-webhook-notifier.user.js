@@ -10,7 +10,11 @@
 // @grant        GM_getValue
 // @connect      api.supabase.co
 // @connect      discord.com
+// @updateURL   https://raw.githubusercontent.com/ghotso/lss-discord-notifier/main/lss-webhook-notifier.user.js
+// @downloadURL https://raw.githubusercontent.com/ghotso/lss-discord-notifier/main/lss-webhook-notifier.user.js
 // @require      https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2
+// @require https://raw.githubusercontent.com/ghotso/lss-discord-notifier/main/settings-modal.js
+// @require https://raw.githubusercontent.com/ghotso/lss-discord-notifier/main/event-detector.js
 // ==/UserScript==
 
 (function() {
