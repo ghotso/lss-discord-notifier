@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         LSS Webhook Notifier
 // @namespace    http://tampermonkey.net/
-// @version      0.1.1
+// @version      0.1.2
 // @description  Notifies Discord about LSS events via webhook
 // @author       Your Name
 // @match        https://www.leitstellenspiel.de/*
