@@ -115,23 +115,22 @@
 
     // Create settings button in the game interface
     function createSettingsButton() {
-        settingsButton = document.createElement('button');
-        settingsButton.innerHTML = '⚙️ Webhook Settings';
-        settingsButton.style.cssText = `
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            z-index: 9999;
-            padding: 10px 20px;
-            background: #7289da;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-weight: bold;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-        `;
-        document.body.appendChild(settingsButton);
+        const navBar = document.querySelector('#navbar-user'); // rechter Teil der Menüleiste
+        if (!navBar) return;
+
+        const li = document.createElement('li');
+        const a = document.createElement('a');
+        a.href = '#';
+        a.innerHTML = '⚙️ Webhook Settings';
+        a.style.color = '#7289da'; // optional für Discord-Farbanlehnung
+
+        a.addEventListener('click', () => {
+            const modal = new SettingsModal();
+            modal.show();
+        });
+
+        li.appendChild(a);
+        navBar.appendChild(li);
     }
 
     // Load settings from Supabase
